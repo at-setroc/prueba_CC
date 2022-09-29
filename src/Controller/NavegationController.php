@@ -21,4 +21,11 @@ class NavegationController extends AbstractController
             'controller_name' => 'NavegationController',
         ]);
     }
+    
+    #[Route('/users', name: 'app_redirect_users')]
+    public function usersRedirect(): Response
+    {
+        return $this->redirectToRoute("app_users");
+    }
+
 }
