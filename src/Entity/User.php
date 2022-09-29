@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -20,17 +21,22 @@ class User implements UserInterface
     #[ORM\Column]
     private array $roles = [];
 
-    #[ORM\Column(length: 20, unique: true)]
-    private ?string $externalId = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $creationDate = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $firstName = null;
+    public function __construct(string $email) {
+        $this->email        = $email;
+        $this->creationDate = new \DateTime();
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $lastName = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $avatar = null;
+        //! Se ha elegido que el usuario con ID = 1 ("george.bluth@reqres.in") tenga rol de Administrador.
+        // Se ha "hard-codeado" esta parte porque la API no devuelve el rol o permisos del usuario. 
+        // En condiciones normales, se establecería el rol que se indicara.
+        if ($email == "george.bluth@reqres.in") {
+            $this->roles = ["ROLE_ADMIN"];
+        } else {
+            $this->roles = ["ROLE_USER"];
+        }
+    }
 
     public function getId(): ?int
     {
@@ -87,50 +93,14 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    public function getExternalId(): ?string
+    public function getCreationDate(): ?\DateTimeInterface
     {
-        return $this->externalId;
+        return $this->creationDate;
     }
 
-    public function setExternalId(string $externalId): self
+    public function setCreationDate(?\DateTimeInterface $creationDate): self
     {
-        $this->externalId = $externalId;
-
-        return $this;
-    }
-
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(?string $firstName): self
-    {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(?string $lastName): self
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
-    }
-
-    public function setAvatar(?string $avatar): self
-    {
-        $this->avatar = $avatar;
+        $this->creationDate = $creationDate;
 
         return $this;
     }
