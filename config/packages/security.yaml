@@ -35,6 +35,8 @@ security:
         - { path: ^/login,      roles: PUBLIC_ACCESS }
         - { path: ^/users/list, roles: ROLE_ADMIN }
         - { path: ^/,           roles: IS_AUTHENTICATED_FULLY }
+    
+    access_denied_url: /login
 
 when@test:
     security:
