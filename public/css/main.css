@@ -1,0 +1,15 @@
+html,
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#row-content {
+    flex-grow: 1;
+    --bs-gutter-x: 0rem;
+}
+
+#content {
+    margin: 2em auto;
+}

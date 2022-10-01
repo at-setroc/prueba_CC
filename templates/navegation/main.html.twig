@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lorem ipsum{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {% include "navegation/top_bar.html.twig" %}
+
+    <div id="row-content" class="row justify-content-center">
+        <div id="content" class="col-11 col-sm-9 col-md-9 col-lg-9 col-xl-9 col-xxl-9">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
