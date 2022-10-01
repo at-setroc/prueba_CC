@@ -6,9 +6,9 @@
 #btn-logout {
     text-decoration: none;
     color: #414a4c;
+    padding: 0 0.5em;
 }
 
 #btn-logout:hover {
-    text-decoration: underline;
     color: red;
 }
