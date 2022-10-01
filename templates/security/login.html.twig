@@ -30,8 +30,10 @@
     {{parent()}}
 {% endblock %}
 
-{% block body %}   
-<main class="form-signin">
+{% block body %}
+<div class="background-image"></div>
+
+<div class="form-signin">
     <form method="post">
 
         {% if app.user %}
@@ -76,6 +78,6 @@
             {{"Iniciar sesión"}}
         </button>
     </form>
-</main>
+</div>
 {% endblock %}
     
