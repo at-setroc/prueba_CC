@@ -21,10 +21,12 @@ class ApiUsersService
         $this->userRepo   = $userRepository;
         $this->db         = $db->initialize();
 
-        $configEndPoint   = $this->configRepo->getVariable("USERS_API_ENDPOINT");
-        $defaultEndPoint  = "https://reqres.in/api/";
+        $configEndPoint  = $this->configRepo->getVariable("USERS_API_ENDPOINT");
+        $defaultEndPoint = "https://reqres.in/api/";
+        $configPerPage   = $this->configRepo->getVariable("USERS_LIST_PER_PAGE");
         
-        $this->endPoint   = (empty($configEndPoint)) ? $defaultEndPoint : $configEndPoint;
+        $this->endPoint        = (empty($configEndPoint)) ? $defaultEndPoint : $configEndPoint;
+        $this->defaultPerPage  = (empty($configPerPage))  ? 4                : $configPerPage;
     }
 
     /**
@@ -85,8 +87,41 @@ class ApiUsersService
         return true;        
     }
 
-    public function getUsers()
+    /**
+     * Función para obtener la lista de usuarios.
+     * 
+     * @param ?array $parameters
+     * 
+     * @return  ?array
+     */
+    public function getUsers(?array $parameters): ?array
     {
+        $url  = $this->endPoint . "users";
+        $curl = new CurlHttpClient();
 
+        if (!$parameters || $parameters["page"] && empty(intval($parameters["page"]))) {
+            $page = 1;
+        } else {
+            $page = $parameters["page"];
+        }
+
+        if (!$parameters || $parameters["per_page"] && empty(intval($parameters["per_page"]))) {
+            $perPage = $this->defaultPerPage;
+        } else {
+            $perPage = $parameters["per_page"];
+        }
+
+        $fields = [
+            "page"     => $page,
+            "per_page" => $perPage
+        ];
+
+        try {
+            $response = $curl->request("GET", $url, ["query" => $fields]);
+        } catch (\Throwable $th) {
+            return array();
+        }
+
+        return json_decode($response->getContent(), true);
     }
 }
