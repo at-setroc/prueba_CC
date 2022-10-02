@@ -1,0 +1,11 @@
+.list-group-item-action {
+    cursor: pointer;
+}
+
+.category-with-form {
+    cursor: pointer;
+}
+
+.category-with-form:hover {
+    color: dodgerblue;
+}
