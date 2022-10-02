@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PurchaseOrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PurchaseOrderRepository::class)]
@@ -20,6 +21,9 @@ class PurchaseOrder
 
     #[ORM\OneToMany(mappedBy: 'purchaseOrder', targetEntity: PurchaseOrderFeatureValue::class)]
     private Collection $purchaseOrderFeatureValues;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $creationDate = null;
 
     public function __construct()
     {
@@ -69,6 +73,18 @@ class PurchaseOrder
                 $purchaseOrderFeatureValue->setPurchaseOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreationDate(): ?\DateTimeInterface
+    {
+        return $this->creationDate;
+    }
+
+    public function setCreationDate(\DateTimeInterface $creationDate): self
+    {
+        $this->creationDate = $creationDate;
 
         return $this;
     }
