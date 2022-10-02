@@ -10,16 +10,20 @@
 
 {% block content %}
 
-    <div class="d-flex mb-4 justify-content-between align-items-center">
-        <h2 class="m-0">{{"Categorías"|trans}}</h2>
+    <div class="d-flex mb-4 justify-content-between align-items-center noselect">
+        <h2 class="m-0">
+            <i class="bi bi-tags-fill text-danger me-2"></i>
+            {{"Categorías"|trans}}
+        </h2>
 
         {% if is_granted('ROLE_ADMIN') %}
-            <a class="btn btn-primary" href="{{ path("app_users") }}">
+            <a class="btn btn-success" href="{{ path("app_users") }}">
                 <i class="bi bi-people-fill"></i>
                 {{"Lista de usuarios"|trans}}
             </a>
         {% endif %}
     </div>
+    <hr class="mb-4">
 
     <div id="categories">
         This friendly message is coming from:
