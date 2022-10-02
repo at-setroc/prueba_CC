@@ -33,9 +33,13 @@ class Category
     #[ORM\Column]
     private ?bool $isActive = null;
 
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Feature::class)]
+    private Collection $features;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->features = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -129,6 +133,36 @@ class Category
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Feature>
+     */
+    public function getFeatures(): Collection
+    {
+        return $this->features;
+    }
+
+    public function addFeature(Feature $feature): self
+    {
+        if (!$this->features->contains($feature)) {
+            $this->features->add($feature);
+            $feature->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeature(Feature $feature): self
+    {
+        if ($this->features->removeElement($feature)) {
+            // set the owning side to null (unless already changed)
+            if ($feature->getCategory() === $this) {
+                $feature->setCategory(null);
+            }
+        }
 
         return $this;
     }
