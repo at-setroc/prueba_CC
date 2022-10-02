@@ -6,9 +6,17 @@
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/top_bar.css') }}"/>
     <link rel="stylesheet" href="{{ asset('css/main.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/categories.css') }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/categories.js') }}"></script>
 {% endblock %}
 
 {% block content %}
+
+    {% import "macros/categories-menu-macro.html.twig" as categoryMacro %}
 
     <div class="d-flex mb-4 justify-content-between align-items-center noselect">
         <h2 class="m-0">
@@ -25,11 +33,9 @@
     </div>
     <hr class="mb-4">
 
-    <div id="categories">
-        This friendly message is coming from:
-        <ul>
-            <li>Your controller at <code><a href="{{ '/var/www/html/prueba_CC/src/Controller/NavegationController.php'|file_link(0) }}">src/Controller/NavegationController.php</a></code></li>
-            <li>Your template at <code><a href="{{ '/var/www/html/prueba_CC/templates/navegation/index.html.twig'|file_link(0) }}">templates/navegation/index.html.twig</a></code></li>
+    <div id="categories" class="noselect">
+        <ul class="list-group">
+            {{ categoryMacro.menu_categories(mainCategories) }}
         </ul>
     </div>
 {% endblock %}
