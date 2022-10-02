@@ -31,6 +31,7 @@ class CategoryRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c');
 
         return $qb->andWhere($qb->expr()->isNull('c.parent'))
+            ->andWhere("c.isActive = 1")
             ->orderBy('c.name', 'ASC')
             ->getQuery()
             ->getResult()
