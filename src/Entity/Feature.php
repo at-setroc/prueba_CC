@@ -43,14 +43,15 @@ class Feature
     private ?bool $nextFeatureInSameSection = null;
 
     #[ORM\ManyToOne(inversedBy: 'features')]
-    private ?FeatureValue $featureValue = null;
-
-    #[ORM\ManyToOne(inversedBy: 'features')]
     private ?FieldType $fieldType = null;
+
+    #[ORM\OneToMany(mappedBy: 'feature', targetEntity: FeatureValue::class)]
+    private Collection $featureValues;
 
     public function __construct()
     {
         $this->features = new ArrayCollection();
+        $this->featureValues = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -184,18 +185,6 @@ class Feature
         return $this;
     }
 
-    public function getFeatureValue(): ?FeatureValue
-    {
-        return $this->featureValue;
-    }
-
-    public function setFeatureValue(?FeatureValue $featureValue): self
-    {
-        $this->featureValue = $featureValue;
-
-        return $this;
-    }
-
     public function getFieldType(): ?FieldType
     {
         return $this->fieldType;
@@ -204,6 +193,36 @@ class Feature
     public function setFieldType(?FieldType $fieldType): self
     {
         $this->fieldType = $fieldType;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, FeatureValue>
+     */
+    public function getFeatureValues(): Collection
+    {
+        return $this->featureValues;
+    }
+
+    public function addFeatureValue(FeatureValue $featureValue): self
+    {
+        if (!$this->featureValues->contains($featureValue)) {
+            $this->featureValues->add($featureValue);
+            $featureValue->setFeature($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeatureValue(FeatureValue $featureValue): self
+    {
+        if ($this->featureValues->removeElement($featureValue)) {
+            // set the owning side to null (unless already changed)
+            if ($featureValue->getFeature() === $this) {
+                $featureValue->setFeature(null);
+            }
+        }
 
         return $this;
     }

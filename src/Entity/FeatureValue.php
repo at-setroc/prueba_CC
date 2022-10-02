@@ -15,14 +15,14 @@ class FeatureValue
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(inversedBy: 'featureValues')]
+    private ?Feature $feature = null;
+
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'featureValues')]
     private ?self $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private Collection $featureValues;
-
-    #[ORM\OneToMany(mappedBy: 'featureValue', targetEntity: Feature::class)]
-    private Collection $features;
 
     #[ORM\Column(length: 255)]
     private ?string $value = null;
@@ -33,7 +33,6 @@ class FeatureValue
     public function __construct()
     {
         $this->featureValues = new ArrayCollection();
-        $this->features = new ArrayCollection();
         $this->purchaseOrderFeatureValues = new ArrayCollection();
     }
 
@@ -84,36 +83,6 @@ class FeatureValue
         return $this;
     }
 
-    /**
-     * @return Collection<int, Feature>
-     */
-    public function getFeatures(): Collection
-    {
-        return $this->features;
-    }
-
-    public function addFeatures(Feature $features): self
-    {
-        if (!$this->features->contains($features)) {
-            $this->features->add($features);
-            $features->setFeatureValue($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFeatures(Feature $features): self
-    {
-        if ($this->features->removeElement($features)) {
-            // set the owning side to null (unless already changed)
-            if ($features->getFeatureValue() === $this) {
-                $features->setFeatureValue(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getValue(): ?string
     {
         return $this->value;
@@ -152,6 +121,18 @@ class FeatureValue
                 $purchaseOrderFeatureValue->setFeatureValue(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFeature(): ?Feature
+    {
+        return $this->feature;
+    }
+
+    public function setFeature(?Feature $feature): self
+    {
+        $this->feature = $feature;
 
         return $this;
     }
