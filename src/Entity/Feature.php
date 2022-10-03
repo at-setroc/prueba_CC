@@ -48,6 +48,12 @@ class Feature
     #[ORM\OneToMany(mappedBy: 'feature', targetEntity: FeatureValue::class)]
     private Collection $featureValues;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $minLength = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $maxLength = null;
+
     public function __construct()
     {
         $this->features = new ArrayCollection();
@@ -223,6 +229,30 @@ class Feature
                 $featureValue->setFeature(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMinLength(): ?int
+    {
+        return $this->minLength;
+    }
+
+    public function setMinLength(?int $minLength): self
+    {
+        $this->minLength = $minLength;
+
+        return $this;
+    }
+
+    public function getMaxLength(): ?int
+    {
+        return $this->maxLength;
+    }
+
+    public function setMaxLength(?int $maxLength): self
+    {
+        $this->maxLength = $maxLength;
 
         return $this;
     }
