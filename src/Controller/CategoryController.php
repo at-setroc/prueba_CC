@@ -12,9 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CategoryController extends AbstractController
 {
-    public function __construct(ManagerRegistry $managerRegistry) 
+    public function __construct(ManagerRegistry $registry) 
     {
-        $this->em = $managerRegistry->getManager();
+        $this->em = $registry->getManager();
     }
 
     #[Route('/categories/{num}/features', name: 'app_form_features')]
