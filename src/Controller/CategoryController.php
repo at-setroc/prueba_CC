@@ -2,19 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Entity\Feature;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\CategoryRepository;
-use App\Repository\FeatureRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 class CategoryController extends AbstractController
 {
-    public function __construct(
-        private CategoryRepository $categoryRepository,
-        private FeatureRepository  $featureRepository
-    ) {
+    public function __construct(ManagerRegistry $managerRegistry) 
+    {
+        $this->em = $managerRegistry->getManager();
     }
 
     #[Route('/categories/{num}/features', name: 'app_form_features')]
@@ -22,13 +22,13 @@ class CategoryController extends AbstractController
     {
         $categoryId = $request->attributes->get("num");
         
-        $category   = $this->categoryRepository->findOneby([
+        $category   = $this->em->getRepository(Category::class)->findOneby([
             "id"        => $categoryId,
             "isActive"  => true,
             "hasForm"   => true
         ]);
 
-        $features   = $this->featureRepository->findBy([
+        $features   = $this->em->getRepository(Feature::class)->findBy([
             "category"  => $category,
             "isActive"  => true
         ],[
