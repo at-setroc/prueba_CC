@@ -20,6 +20,10 @@
     height: 8em;
 }
 
+.page-link:hover {
+    cursor: pointer;
+}
+
 .page-link:focus {
     box-shadow: none;
     background: none;

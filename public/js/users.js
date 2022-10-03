@@ -57,12 +57,16 @@ function updatePagination(params) {
     $(".pagination").empty();
     
     if (parseInt(params.page) > 1) {
-        $(".pagination").append('<li class="page-item"><a class="page-link" data-page="'+(parseInt(params.page)-1).toString()+'" href="#">Anterior</a></li>');
+        $(".pagination").append('<li class="page-item"><div class="page-link" data-page="'+(parseInt(params.page)-1).toString()+'"><i class="bi bi-chevron-double-left"></i></div></li>');
+    } else {
+        $(".pagination").append('<li class="page-item invisible"><div class="page-link"><i class="bi bi-chevron-double-left"></i></div></li>');
     }
 
-    $(".pagination").append('<li class="page-item active noselect"><a class="page-link active" data-page="'+params.page+'">'+params.page+'</a></li>');
+    $(".pagination").append('<li class="page-item active noselect"><div class="page-link active" data-page="'+params.page+'">'+params.page+'</div></li>');
 
     if (parseInt(params.page) < parseInt(params.total_pages)) {
-        $(".pagination").append('<li class="page-item"><a class="page-link" data-page="'+(parseInt(params.page)+1).toString()+'" href="#">Siguiente</a></li>');
+        $(".pagination").append('<li class="page-item"><div class="page-link" data-page="'+(parseInt(params.page)+1).toString()+'"><i class="bi bi-chevron-double-right"></i></div></li>');
+    } else {
+        $(".pagination").append('<li class="page-item invisible"><div class="page-link"><i class="bi bi-chevron-double-right"></i></div></li>');
     }
 }
