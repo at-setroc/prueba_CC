@@ -31,7 +31,7 @@ class Category
     private ?bool $hasForm = null;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
+    private ?bool $active = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Feature::class)]
     private Collection $features;
@@ -125,14 +125,14 @@ class Category
         return $this;
     }
 
-    public function isIsActive(): ?bool
+    public function isActive(): ?bool
     {
-        return $this->isActive;
+        return $this->active;
     }
 
-    public function setIsActive(bool $isActive): self
+    public function setActive(bool $active): self
     {
-        $this->isActive = $isActive;
+        $this->active = $active;
 
         return $this;
     }

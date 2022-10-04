@@ -34,10 +34,10 @@ class Feature
     private ?int $formOrder = null;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
+    private ?bool $active = null;
 
     #[ORM\Column]
-    private ?bool $isRequired = null;
+    private ?bool $required = null;
 
     #[ORM\Column]
     private ?bool $nextFeatureInSameSection = null;
@@ -155,26 +155,26 @@ class Feature
         return $this;
     }
 
-    public function isIsActive(): ?bool
+    public function isActive(): ?bool
     {
-        return $this->isActive;
+        return $this->active;
     }
 
-    public function setIsActive(bool $isActive): self
+    public function setActive(bool $active): self
     {
-        $this->isActive = $isActive;
+        $this->active = $active;
 
         return $this;
     }
 
-    public function isIsRequired(): ?bool
+    public function isRequired(): ?bool
     {
-        return $this->isRequired;
+        return $this->required;
     }
 
-    public function setIsRequired(bool $isRequired): self
+    public function setRequired(bool $required): self
     {
-        $this->isRequired = $isRequired;
+        $this->required = $required;
 
         return $this;
     }
