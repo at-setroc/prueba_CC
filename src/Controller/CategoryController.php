@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Feature;
+use App\Form\PurchaseOrderType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,16 +22,14 @@ class CategoryController extends AbstractController
     public function formFeatures(Request $request): Response
     {
         $categoryId = $request->attributes->get("num");
-        
         $category   = $this->em->getRepository(Category::class)->findOneby([
             "id"        => $categoryId,
-            "isActive"  => true,
+            "active"  => true,
             "hasForm"   => true
         ]);
-
         $features   = $this->em->getRepository(Feature::class)->findBy([
             "category"  => $category,
-            "isActive"  => true
+            "active"  => true
         ],[
             "formOrder" => "ASC"
         ]);
@@ -40,9 +39,24 @@ class CategoryController extends AbstractController
             return $this->redirectToRoute("app_homepage");
         }
 
+        $form = $this->createForm(PurchaseOrderType::class, $features);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            
+            // TODO: Llamar a servicio para realizar el guardado
+
+            dd($form->getData());
+
+
+            // TODO: Notificación de formulario guardado
+
+            return $this->redirectToRoute("app_homepage");
+        }
+
         return $this->render('category/form_features.html.twig', [
-            'category' => $category,
-            'features' => $features,
+            "category" => $category,
+            "features" => $features,
+            "form"     => $form->createView()
         ]);
     }
 
