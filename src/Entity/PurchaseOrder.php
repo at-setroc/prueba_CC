@@ -25,9 +25,11 @@ class PurchaseOrder
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $creationDate = null;
 
-    public function __construct()
+    public function __construct(string $requester = null)
     {
         $this->purchaseOrderFeatureValues = new ArrayCollection();
+        $this->requester                  = $requester;
+        $this->creationDate               = new \DateTime();
     }
 
     public function getId(): ?int

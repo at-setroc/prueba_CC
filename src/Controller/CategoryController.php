@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Feature;
 use App\Form\PurchaseOrderType;
+use App\Service\PurchaseOrderService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,9 +14,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CategoryController extends AbstractController
 {
-    public function __construct(ManagerRegistry $registry) 
-    {
-        $this->em = $registry->getManager();
+    public function __construct(
+        ManagerRegistry      $registry,
+        PurchaseOrderService $purchaseOrderService
+    ) {
+        $this->em                   = $registry->getManager();
+        $this->purchaseOrderService = $purchaseOrderService;
     }
 
     #[Route('/categories/{num}/features', name: 'app_form_features')]
@@ -43,14 +47,19 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             
-            // TODO: Llamar a servicio para realizar el guardado
-            dump("Submitted!!!");
-            dd($form->getData());
+            $data      = $form->getData();
+            $userEmail = ($this->getUser()) ? $this->getUser()->getUserIdentifier() : null;
 
+            $result = $this->purchaseOrderService->savePurchaseOrder($data, $userEmail);
 
-            // TODO: Notificación de formulario guardado
+            $form = $this->createForm(PurchaseOrderType::class, $features);
 
-            return $this->redirectToRoute("app_homepage");
+            return $this->render('category/form_features.html.twig', [
+                "category" => $category,
+                "features" => $features,
+                "form"     => $form->createView(),
+                "creation" => $result
+            ]);
         }
 
         return $this->render('category/form_features.html.twig', [

@@ -42,7 +42,10 @@ class PurchaseOrderType extends AbstractType
         $formModifier = function (FormInterface $form, $field = null, $data = null) {
             
             $fieldFeature      = $this->featureRepo->findOneByCodeName($field->getName());
-            $fieldFeatureValue = $this->featureValueRepo->findOneById($data);
+            $fieldFeatureValue = $this->featureValueRepo->findOneBy([
+                "feature"   => $fieldFeature,
+                "value"     => $data
+            ]);
 
             $featureChildren = $this->featureRepo->findBy([
                 "parent"    => $fieldFeature,
@@ -59,7 +62,7 @@ class PurchaseOrderType extends AbstractType
                 $childChoices = array();
                 if (!is_null($data)) {
                     foreach ($choices as $choice) {
-                        $childChoices[$choice->getValue()] = $choice->getId();
+                        $childChoices[$choice->getValue()] = $choice->getValue();
                     }
                 }
 
@@ -123,21 +126,10 @@ class PurchaseOrderType extends AbstractType
 
         switch ($type) {
             
-            case 'text':
-                $config["type"] = TextType::class;
-
-                if (!empty($feature->getMinLength())) {
-                    $config["options"]["attr"]["minlength"] = $feature->getMinLength();
-                }
-
-                if (!empty($feature->getMaxLength())) {
-                    $config["options"]["attr"]["maxlength"] = $feature->getMaxLength();
-                }
-
-                break;
-            
             case 'numeric':
                 $config["type"] = IntegerType::class;
+
+                $config["options"]["attr"]["class"] = "form-control";
 
                 if (!empty($feature->getMinLength())) {
                     $config["options"]["attr"]["min"] = str_pad("1", $feature->getMinLength(), "0", STR_PAD_RIGHT);
@@ -150,8 +142,9 @@ class PurchaseOrderType extends AbstractType
             
             case 'select':
                 $config["type"] = ChoiceType::class;
-                
-                $config["options"]["placeholder"] = $feature->getName();
+
+                $config["options"]["attr"]["class"] = "form-select";
+                $config["options"]["placeholder"]   = $feature->getName();
                 
                 // Establecemos los valores del select
                 if (!empty($choices)) {
@@ -161,37 +154,48 @@ class PurchaseOrderType extends AbstractType
                     $choices = $feature->getFeatureValues();
 
                     foreach ($choices as $choice) {
-                        $config["options"]["choices"][$choice->getValue()] = $choice->getId();
+                        $config["options"]["choices"][$choice->getValue()] = $choice->getValue();
                     }
                 }
 
                 // Comprobamos si tiene "subfeatures"
                 if (!empty(count($feature->getFeatures()))) {
-                    if (empty($config["options"]["attr"]["class"])) {
-                        $config["options"]["attr"]["class"]  = "feature-parent";
-                    } else {
-                        $config["options"]["attr"]["class"] .= " feature-parent";
-                    }
+                    $config["options"]["attr"]["class"] .= " feature-parent";
                 }
 
                 // Comprobamos si es dependiente de otra categoría
                 if ($feature->getParent()) {
-                    if (empty($config["options"]["attr"]["class"])) {
-                        $config["options"]["attr"]["class"]  = "child_".$feature->getParent()->getCodeName();
-                    } else {
-                        $config["options"]["attr"]["class"] .= " child_".$feature->getParent()->getCodeName();
-                    }
+                    $config["options"]["attr"]["class"] .= " child_".$feature->getParent()->getCodeName();
                 }
 
                 break;
             
-            default:
+            default: // text (Por defecto, el de texto)
+
                 $config["type"] = TextType::class;
+
+                $config["options"]["attr"]["class"] = "form-control";
+
+                if (!empty($feature->getMinLength())) {
+                    $config["options"]["attr"]["minlength"] = $feature->getMinLength();
+                }
+
+                if (!empty($feature->getMaxLength())) {
+                    $config["options"]["attr"]["maxlength"] = $feature->getMaxLength();
+                }
                 break;
         }
 
         $config["options"]["label"]    = $feature->getName();
         $config["options"]["required"] = $feature->isRequired();
+
+        if ($feature->isNextFeatureInSameSection()) {
+            if (empty($config["options"]["attr"]["class"])) {
+                $config["options"]["attr"]["class"]  = "next_in_same_section";
+            } else {
+                $config["options"]["attr"]["class"] .= " next_in_same_section";
+            }
+        }
 
         return $config;
     }

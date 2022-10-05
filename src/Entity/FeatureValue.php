@@ -30,10 +30,12 @@ class FeatureValue
     #[ORM\OneToMany(mappedBy: 'featureValue', targetEntity: PurchaseOrderFeatureValue::class)]
     private Collection $purchaseOrderFeatureValues;
 
-    public function __construct()
+    public function __construct(string $value)
     {
         $this->featureValues = new ArrayCollection();
         $this->purchaseOrderFeatureValues = new ArrayCollection();
+
+        $this->value = $value;
     }
 
     public function getId(): ?int

@@ -4,12 +4,12 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {# <link rel="stylesheet" href="{{ asset('css/form_features.css') }}"/> #}
+    <link rel="stylesheet" href="{{ asset('css/form_features.css') }}"/>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {# <script src="{{ asset('js/form_features.js') }}"></script> #}
+    <script src="{{ asset('js/form_features.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -25,4 +25,50 @@
         </a>
     </div>
     <hr class="mb-4">
+
+    <div>
+        {% if creation is defined %}
+            <div class="order-notification {% if creation == true %}success{% else %}failure{% endif %}">
+                {% if creation == true %}
+                    <h3>{{"¡Pedido guardado!"|trans}} <i class="bi bi-hand-thumbs-up"></i></h3>
+                {% else %}
+                    <h3><i class="bi bi-bug-fill"></i> {{"Ha ocurrido un error al intentar guardar el pedido."|trans}}</h3>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    {% set flag_next_field_in_same_section = false %}
+
+    <div class="form_panel d-flex flex-column">
+        {{ form_start(form) }}
+                
+        {% for child in form.children %}
+            {% if child.vars.name != "_token" %}
+                
+                {% if flag_next_field_in_same_section == false %}
+                    <div class="mb-3 section_div">
+                {% endif %}
+    
+                    <label class="form-label">{{ form_label(child) }}</label>
+                    {{ form_widget(child) }}
+
+                {% if child.vars.attr.class is defined and "next_in_same_section" in child.vars.attr.class %}
+                    {% set flag_next_field_in_same_section = true %}
+                {% else %}
+                    </div>
+                    {% set flag_next_field_in_same_section = false %}
+                {% endif %}
+
+            
+            {% endif %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-center">
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-success submit_btn">{{"Guardar pedido"|trans}}</button> 
+        </div>
+        {{ form_end(form) }}
+    </div>
+
 {% endblock %}
