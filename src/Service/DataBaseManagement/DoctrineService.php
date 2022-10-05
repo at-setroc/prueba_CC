@@ -14,13 +14,13 @@ class DoctrineService implements DataBaseManagementInterface
         $this->em   = $entityManager;
     }
 
-    public function save(Entity|User $entity): void
+    public function save(mixed $entity): void
     {
         $this->em->persist($entity);
         $this->em->flush();
     }
 
-    public function remove(Entity|User $entity): void
+    public function remove(mixed $entity): void
     {
         $this->em->remove($entity);
         $this->em->flush();

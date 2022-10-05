@@ -12,7 +12,6 @@ use Symfony\Component\HttpClient\CurlHttpClient;
 class ApiUsersService
 {
     public function __construct(
-        ManagerRegistry             $registry,
         ConfigRepository            $configRepository,
         UserRepository              $userRepository,
         DataBaseManagementFactory   $db
@@ -21,8 +20,8 @@ class ApiUsersService
         $this->userRepo   = $userRepository;
         $this->db         = $db->initialize();
 
-        $configEndPoint  = $this->configRepo->getVariable("USERS_API_ENDPOINT");
         $defaultEndPoint = "https://reqres.in/api/";
+        $configEndPoint  = $this->configRepo->getVariable("USERS_API_ENDPOINT");
         $configPerPage   = $this->configRepo->getVariable("USERS_LIST_PER_PAGE");
         
         $this->endPoint        = (empty($configEndPoint)) ? $defaultEndPoint : $configEndPoint;
@@ -80,7 +79,6 @@ class ApiUsersService
             $this->db->save($user);
         
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             return false;
         }
 

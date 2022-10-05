@@ -31,11 +31,15 @@ class Category
     private ?bool $hasForm = null;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
+    private ?bool $active = null;
+
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Feature::class)]
+    private Collection $features;
 
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->features = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -121,14 +125,44 @@ class Category
         return $this;
     }
 
-    public function isIsActive(): ?bool
+    public function isActive(): ?bool
     {
-        return $this->isActive;
+        return $this->active;
     }
 
-    public function setIsActive(bool $isActive): self
+    public function setActive(bool $active): self
     {
-        $this->isActive = $isActive;
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Feature>
+     */
+    public function getFeatures(): Collection
+    {
+        return $this->features;
+    }
+
+    public function addFeature(Feature $feature): self
+    {
+        if (!$this->features->contains($feature)) {
+            $this->features->add($feature);
+            $feature->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeature(Feature $feature): self
+    {
+        if ($this->features->removeElement($feature)) {
+            // set the owning side to null (unless already changed)
+            if ($feature->getCategory() === $this) {
+                $feature->setCategory(null);
+            }
+        }
 
         return $this;
     }

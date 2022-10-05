@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Repository\CategoryRepository;
+use App\Entity\Category;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,8 +11,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class NavegationController extends AbstractController
 {
     public function __construct(
-        private CategoryRepository $categoryRepository
+        ManagerRegistry $registry
     ) {
+        $this->em = $registry->getManager();
     }
 
     #[Route('/', name: 'app_root')]
@@ -23,7 +25,7 @@ class NavegationController extends AbstractController
     #[Route('/home', name: 'app_homepage')]
     public function home(): Response
     {
-        $mainCategories = $this->categoryRepository->findMainCategories();
+        $mainCategories = $this->em->getRepository(Category::class)->findMainCategories();
 
         return $this->render('navegation/home.html.twig', [
             'mainCategories' => $mainCategories,
