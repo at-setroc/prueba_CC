@@ -79,7 +79,6 @@ class ApiUsersService
             $this->db->save($user);
         
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             return false;
         }
 
