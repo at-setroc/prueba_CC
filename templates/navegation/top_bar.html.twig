@@ -1,0 +1,10 @@
+<nav id="top-bar" class="navbar noselect">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="{{ path('app_homepage') }}">
+            <img src="{{ asset('assets/logo.svg') }}" alt="" width="auto" height="auto">
+        </a>
+        <a id="btn-logout" title="{{'Cerrar sesión'|trans}}" href="{{ path('app_logout') }}">
+            <i class="bi bi-box-arrow-right fs-2"></i>
+        </a>
+    </div>
+</nav>

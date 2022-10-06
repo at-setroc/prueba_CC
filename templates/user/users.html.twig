@@ -1,0 +1,90 @@
+{% extends 'navegation/main.html.twig' %}
+
+{% block title %}{{"Lista de usuarios"|trans}}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/users.css') }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/users.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    
+    <input id="refresh_list_path" type="hidden" value="{{path("app_users_query")}}">
+
+    {# Cabecera #}
+    <div class="d-flex mb-4 justify-content-between align-items-center noselect">
+        <h2 class="m-0">
+            <i class="bi bi-people-fill text-primary me-2"></i>
+            {{"Lista de usuarios"|trans}}
+        </h2>
+        <a class="text-decoration-none d-flex align-items-center me-2" href="{{ path("app_homepage") }}">
+            <i class="bi bi-arrow-left-short fs-2"></i>
+            {{"Atrás"|trans}}
+        </a>
+    </div>
+    <hr class="mb-4">
+
+    {# Selector de número de elementos por página #}
+    <div class="d-flex justify-content-end align-items-center mb-4">
+        <div class="me-2">{{"Usuarios por página"|trans}}:</div>
+        <select id="select-per-page" class="form-select w-25">
+            <option value="4">4</option>
+            <option value="8">8</option>
+            <option value="16">16</option>
+            <option value="32">32</option>
+            <option value="64">64</option>
+            <option value="128">128</option>
+        </select>
+    </div>
+
+    {# Lista de usuarios #}
+    <div id="users-list" class="d-flex justify-content-evenly flex-wrap">
+    {% if users is defined and users is iterable %}
+        {% for user in users.data %}
+            <div class="user-card">
+                <img class="user-avatar noselect" src="{{user.avatar}}" alt="{{user.first_name}}">
+                <span class="fw-bold mt-3 text-break">{{user.first_name}} {{user.last_name}}</span>
+                <span class="user-card-email text-break">{{user.email}}</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+
+    {# Paginación #}
+    <div class="d-flex justify-content-center align-items-baseline">
+        <span class="me-3">{{"Página"}}:</span>
+        <nav>
+            <ul class="pagination">
+                {% if users.page > 1 %}
+                    <li class="page-item">
+                        <div class="page-link" data-page="{{users.page - 1}}"><i class="bi bi-chevron-double-left"></i></div>
+                    </li>
+                {% else %}
+                    <li class="page-item invisible">
+                        <div class="page-link"><i class="bi bi-chevron-double-left"></i></div>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active noselect">
+                    <div class="page-link active" data-page="{{users.page}}">{{ users.page }}</div>
+                </li>
+                    
+                {% if users.page < users.total_pages %}
+                    <li class="page-item">
+                        <div class="page-link" data-page="{{users.page + 1}}"><i class="bi bi-chevron-double-right"></i></div>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <div class="page-link invisible"><i class="bi bi-chevron-double-right"></i></div>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+{% endblock %}
